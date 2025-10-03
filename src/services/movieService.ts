@@ -9,21 +9,16 @@ const api: AxiosInstance = axios.create({
   headers: { Authorization: `Bearer ${TMDB_TOKEN}` },
 });
 
-interface SearchMoviesResponse {
+export interface SearchMoviesResponse {
   page: number;
   results: Movie[];
   total_pages: number;
   total_results: number;
 }
 
-export async function fetchMovies(query: string): Promise<Movie[]> {
+export async function fetchMovies(query: string, page = 1): Promise<SearchMoviesResponse> {
   const { data } = await api.get<SearchMoviesResponse>("/search/movie", {
-    params: {
-      query,
-      include_adult: false,
-      language: "en-US",
-      page: 1,
-    },
+    params: { query: query.trim(), include_adult: false, language: "en-US", page },
   });
-  return data.results;
+  return data;
 }
